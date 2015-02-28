@@ -85,7 +85,7 @@ def get_show_upload_folder(instance, pathname):
 def get_episode_upload_folder(instance, pathname):
     "A standardized pathname for uploaded files and images."
     root, ext = os.path.splitext(pathname)
-    if instance.shows.count() == 1:
+    if instance.shows and instance.shows.count() == 1:
         return "img/podcasts/{0}/episodes/{1}{2}".format(
             instance.shows.all()[0].slug, slugify(root), ext
         )

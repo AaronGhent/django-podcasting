@@ -80,7 +80,6 @@ class ITunesElements(object):
                 handler.addQuickElement("link", self.feed["link"])
                 handler.endElement("image")
 
-        handler.addQuickElement("guid", str(show.uuid), attrs={"isPermaLink": "false"})
         handler.addQuickElement("itunes:subtitle", self.feed["subtitle"])
         handler.addQuickElement("itunes:author", show.author_text)
         handler.startElement("itunes:owner", {})
@@ -92,7 +91,7 @@ class ITunesElements(object):
         handler.addQuickElement("itunes:explicit", show.get_explicit_display())
         if show.redirect:
             handler.addQuickElement("itunes:new-feed-url", show.redirect)
-        handler.addQuickElement("keywords", show.keywords)
+
         if show.editor_email:
             handler.addQuickElement("managingEditor", show.editor_email)
         if show.webmaster_email:
@@ -102,8 +101,6 @@ class ITunesElements(object):
                                     rfc2822_date(show.episode_set.published()[1].published))
         except IndexError:
             pass
-        handler.addQuickElement("generator", "Django Web Framework")
-        handler.addQuickElement("docs", "http://blogs.law.harvard.edu/tech/rss")
 
     def add_item_elements(self, handler, item):
         """ Add additional elements to the episode object"""
@@ -136,20 +133,8 @@ class ITunesElements(object):
                 itunes_lg_url = episode.original_image.url
             if itunes_sm_url and itunes_lg_url:
                 handler.addQuickElement("itunes:image", attrs={"href": itunes_lg_url})
-                handler.startElement("image", {})
-                handler.addQuickElement("url", itunes_sm_url)
-                handler.addQuickElement("title", episode.title)
-                handler.addQuickElement("link", episode.get_absolute_url())
-                handler.endElement("image")
 
         handler.addQuickElement("guid", str(episode.uuid), attrs={"isPermaLink": "false"})
-        if licenses:
-            handler.addQuickElement("copyright", "{0} {1} {2}".format(show.license.name,
-                                                                      show.license.url,
-                                                                      datetime.date.today().year))
-        else:
-            handler.addQuickElement("copyright", "{0} {1}".format(show.license.name,
-                                                                  datetime.date.today().year))
         handler.addQuickElement("itunes:author", episode.author_text)
         handler.addQuickElement("itunes:subtitle", episode.subtitle)
         handler.addQuickElement("itunes:summary", episode.description)
